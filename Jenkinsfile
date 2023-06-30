@@ -1,10 +1,5 @@
-
 pipeline {
     agent {label 'slavenode'} 
-
-    environment {
-        function_name = 'java-sample'
-    }
 
     stages {
         stage('Build') {
@@ -13,13 +8,57 @@ pipeline {
                 sh 'mvn package'
             }
         }
-
+        stage('checking branch'){
+            steps{
+                script{
+                    if (env.BRANCH_NAME == 'main'){
+                        echo 'this is main branch'
+                    }
+                    else{
+                        echo 'this is $(env.BRANCH_NAME)'
+                    }
+                }
+            }
+        }
         stage("SonarQube analysis") {
+
+            when{
+                anyof{
+                    branch 'feature/*'
+                }
+            }
             steps {
               withSonarQubeEnv('sonar') {
                 sh 'mvn sonar:sonar'
               }
             }
           }
+
+        stage("Quality Gate") {
+            steps {
+                script{
+                    try{
+                        timeout(time: 1, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+            }
+            catch(Exception e)
+                }
+            }
+        }
+
+        stage('Deployment') {
+            parallel{
+                steps{
+                    echo 'Deployment to UAT'
+                }
+
+                steps{
+                    echo 'Deployment to test'
+                }
+            }
+        }
+
+
     }
-} 
+}
