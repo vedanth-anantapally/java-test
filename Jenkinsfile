@@ -1,3 +1,4 @@
+
 pipeline {
     agent {label 'slavenode'} 
 
@@ -51,12 +52,16 @@ pipeline {
 
         stage('Deployment') {
             parallel{
-                steps{
-                    echo 'Deployment to UAT'
+                stage{
+                    steps{
+                        echo 'Deployment to UAT'
+                    }
                 }
-
-                steps{
-                    echo 'Deployment to test'
+            
+                stage{
+                    steps{
+                        echo 'Deployment to test'
+                    }
                 }
             }
         }
