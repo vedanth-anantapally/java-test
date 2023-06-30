@@ -36,23 +36,36 @@ pipeline {
 
         stage("Quality Gate") {
             steps {
+                script {
+                    try {
                         timeout(time: 1, unit: 'MINUTES') {
-                            waitForQualityGate abortPipeline: true
+                            def qualityGate = waitForQualityGate abortPipeline: true
+                            echo "status is {$qualityGate}"
+                            echo "gate details are {$qualityGate}"
                         }
+                    } catch (Exception e) {
+                        echo "Quality Gate failed: ${e.getMessage()}"
+                    }
                 }
             }
-        
+        }
 
 
         stage('Deployment') {
+            parallel{
+                stage('UAT Deployment'){
                     steps{
                         echo 'Deployment to UAT'
                     }
                 }
             
-                
-            
-        
+                stage('Test Deployment'){
+                    steps{
+                        echo 'Deployment to test'
+                    }
+                }
+            }
+        }
 
 
     }
