@@ -1,4 +1,3 @@
-
 pipeline {
     agent {label 'slavenode'} 
 
@@ -16,7 +15,7 @@ pipeline {
                         echo 'this is main branch'
                     }
                     else{
-                        echo 'this is ${env.BRANCH_NAME}'
+                        echo "this is ${env.BRANCH_NAME}"
                     }
                 }
             }
