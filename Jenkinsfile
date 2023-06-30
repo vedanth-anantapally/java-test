@@ -1,4 +1,3 @@
-
 pipeline {
     agent {label 'slavenode'} 
 
@@ -37,15 +36,18 @@ pipeline {
 
         stage("Quality Gate") {
             steps {
-                try {
-                    timeout(time: 1, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
+                script {
+                    try {
+                        timeout(time: 1, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    } catch (Exception e) {
+                        echo "Quality Gate failed: ${e.getMessage()}"
                     }
-                } catch (Exception e) {
-                    echo "Quality Gate failed: ${e.getMessage()}"
                 }
             }
         }
+
 
         stage('Deployment') {
             parallel{
