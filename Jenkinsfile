@@ -41,10 +41,10 @@ pipeline {
                         timeout(time: 1, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
                         }
-            }
-            catch(Exception e){
-                
-            }
+                     }
+                    catch(Exception e){
+
+                     }
                 }
             }
         }
