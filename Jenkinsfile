@@ -1,5 +1,6 @@
+
 pipeline {
-    agent any
+    agent {label 'slavenode'} 
 
     environment {
         function_name = 'java-sample'
@@ -13,20 +14,12 @@ pipeline {
             }
         }
 
-        stage('Push') {
+        stage("SonarQube analysis") {
             steps {
-                echo 'Push'
-
-                sh "aws s3 cp target/sample-1.0.3.jar s3://bckfors3fromlambda123"
+              withSonarQubeEnv('sonar') {
+                sh 'mvn sonar:sonar'
+              }
             }
-        }
-
-        stage('Deploy') {
-            steps {
-                echo 'Build'
-
-                sh "aws lambda update-function-code --function-name $function_name --s3-bucket bckfors3fromlambda123 --s3-key sample-1.0.3.jar"
-            }
-        }
+          }
     }
-}
+} 
