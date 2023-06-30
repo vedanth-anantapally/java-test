@@ -36,17 +36,12 @@ pipeline {
 
         stage("Quality Gate") {
             steps {
-                script {
-                    try {
                         timeout(time: 1, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: true
                         }
-                    } catch (Exception e) {
-                        echo "Quality Gate failed: ${e.getMessage()}"
-                    }
                 }
             }
-        }
+        
 
 
         stage('Deployment') {
