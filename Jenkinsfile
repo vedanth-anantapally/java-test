@@ -23,7 +23,7 @@ pipeline {
         stage("SonarQube analysis") {
 
             when{
-                anyof{
+                anyOf{
                     branch 'feature/*'
                 }
             }
