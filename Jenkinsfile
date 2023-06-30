@@ -45,20 +45,14 @@ pipeline {
 
 
         stage('Deployment') {
-            parallel{
-                stage('UAT Deployment'){
                     steps{
                         echo 'Deployment to UAT'
                     }
                 }
             
-                stage('Test Deployment'){
-                    steps{
-                        echo 'Deployment to test'
-                    }
-                }
-            }
-        }
+                
+            
+        
 
 
     }
