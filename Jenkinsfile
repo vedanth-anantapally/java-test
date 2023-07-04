@@ -1,5 +1,15 @@
+
 pipeline {
     agent {label 'slavenode'} 
+
+    parameters{
+        string(name: 'Rollbackversion', description: 'Enter your rollback version')
+        choice{
+            choices: ['Dev', 'UAT', 'Prod']
+            name: 'Environment'
+            description: 'Select your environment'
+        }
+    }
 
     stages {
         stage('Build') {
@@ -64,8 +74,58 @@ pipeline {
                         echo 'Deployment to test'
                     }
                 }
+
+                stage('Production Deployment'){
+                    
+                    when{
+                        expression{ return params.Environment == 'Prod'}
+                    }
+
+
+                    steps{
+                        input(
+                            message: 'Agreed to deploy this build for production'
+                            submitter: 'admin'
+                        )
+                        echo 'Deployment to Production post approval'
+                    }
+                }
             }
         }
+
+    post{
+
+        always{
+            echo "Always"
+
+            mail (to:'ananthapally.vedanth@gmail.com', subject: 'notification for always', body: 'notification for always')
+
+            echo "${BUILD_NUMBER}"
+            echo "${BUILD_ID}"
+            echo "${JOB_NAME}"
+
+        }
+
+        failure{
+            echo "failure"
+
+            mail (to:'ananthapally.vedanth@gmail.com', subject: 'notification for failure', body: 'notification for failure')
+
+            echo "${BUILD_NUMBER}"
+            echo "${BUILD_ID}"
+            echo "${JOB_NAME}"
+        }
+
+        abort{
+            echo "abort"
+
+            mail (to:'ananthapally.vedanth@gmail.com', subject: 'notification for abort', body: 'notification for abort')
+            
+            echo "${BUILD_NUMBER}"
+            echo "${BUILD_ID}"
+            echo "${JOB_NAME}"
+        }
+    }
 
 
     }
