@@ -55,41 +55,34 @@ pipeline {
                 }
             }
         }
-
-        stage('Deployment') {
-            steps {
-                echo 'Deployment'
-
                  
-                stage('UAT Deployment') {
-                    steps {
-                        echo 'Deployment to UAT'
-                    }
-                }
-
-                stage('Test Deployment') {
-                    steps {
-                        echo 'Deployment to test'
-                    }
-                }
-
-                stage('Production Deployment') {
-                    when {
-                        expression {
-                            return params.Environment == 'Prod'
-                        }
-                    }
-    
-                    steps {
-                        input(
-                            message: 'Agreed to deploy this build for production'
-                        )
-                        echo 'Deployment to Production post approval'
-                    }
-                }
-                
+        stage('UAT Deployment') {
+            steps {
+                echo 'Deployment to UAT'
             }
         }
+
+        stage('Test Deployment') {
+            steps {
+                echo 'Deployment to test'
+            }
+        }
+
+        stage('Production Deployment') {
+            when {
+                expression {
+                    return params.Environment == 'Prod'
+                }
+            }
+
+            steps {
+                input(
+                    message: 'Agreed to deploy this build for production'
+                )
+                echo 'Deployment to Production post approval'
+            }
+        }
+
     }
 
     post {
