@@ -59,36 +59,36 @@ pipeline {
         stage('Deployment') {
             steps {
                 echo 'Deployment'
-            }
 
-        parallel {
-            stage('UAT Deployment') {
-                steps {
-                    echo 'Deployment to UAT'
-                }
-            }
+                parallel {
+                    stage('UAT Deployment') {
+                        steps {
+                            echo 'Deployment to UAT'
+                        }
+                    }
 
-            stage('Test Deployment') {
-                steps {
-                    echo 'Deployment to test'
-                }
-            }
+                    stage('Test Deployment') {
+                        steps {
+                            echo 'Deployment to test'
+                        }
+                    }
 
-            stage('Production Deployment') {
-                when {
-                    expression {
-                        return params.Environment == 'Prod'
+                    stage('Production Deployment') {
+                        when {
+                            expression {
+                                return params.Environment == 'Prod'
+                            }
+                        }
+        
+                        steps {
+                            input(
+                                message: 'Agreed to deploy this build for production'
+                            )
+                            echo 'Deployment to Production post approval'
+                        }
                     }
                 }
-
-                steps {
-                    input(
-                        message: 'Agreed to deploy this build for production'
-                    )
-                    echo 'Deployment to Production post approval'
-                }
             }
-        }
         }
     }
 
