@@ -85,7 +85,6 @@ pipeline {
                     steps{
                         input(
                             message: 'Agreed to deploy this build for production'
-                            submitter: 'admin'
                         )
                         echo 'Deployment to Production post approval'
                     }
